@@ -1,0 +1,12 @@
+{
+  "name": "astar-kotlin-js",
+  "version": "0.0.0",
+  "private": true,
+  "main": "astar-kotlin-js.js",
+  "resolutions": {},
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

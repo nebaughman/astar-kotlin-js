@@ -7,9 +7,11 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "astar-kotlin-js": "file:lib/astar/",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.6",
+    "vue-class-store": "^2.0.5",
     "vue-property-decorator": "^9.1.2",
     "vuetify": "^2.4.0"
   },
