@@ -1,5 +1,5 @@
 <template>
-  <div class="cell pa-1" :class="cellClass" @click="handleClick">
+  <div class="cell pa-1" :class="cellClass" @mousedown="handleClick" @mouseover="handleDrag">
     {{ x }},{{ y }}
   </div>
 </template>
@@ -24,6 +24,10 @@
     private handleClick() {
       if (this.isStart || this.isGoal) return
       this.$emit("cell-click", this.gridNode)
+    }
+
+    private handleDrag(event) {
+      if (event.buttons) this.handleClick()
     }
 
     get isWall() {

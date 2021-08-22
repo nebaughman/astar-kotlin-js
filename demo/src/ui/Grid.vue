@@ -48,5 +48,6 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     display: grid;
+    user-select: none;
   }
 </style>
