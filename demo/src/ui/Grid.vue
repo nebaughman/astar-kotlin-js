@@ -13,14 +13,14 @@
 <script lang="ts">
   import { Vue, Component, Prop, Inject } from "vue-property-decorator"
   import kotlin from "astar-kotlin-js"
-  import { Store } from "./Store"
+  import { Logic } from "./Logic"
   import Cell from "./Cell.vue"
 
   @Component({
     components: { Cell }
   })
   export default class Grid extends Vue {
-    @Inject() readonly store!: Store
+    @Inject() readonly logic!: Logic
 
     @Prop(Number) readonly w!: number
     @Prop(Number) readonly h!: number
@@ -35,7 +35,7 @@
     }
 
     cellClick(node: kotlin.astar.GridNode) {
-      this.store.gridMap.addWall(node)
+      this.logic.gridMap.toggleWall(node)
     }
   }
 </script>

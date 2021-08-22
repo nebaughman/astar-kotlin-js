@@ -4,22 +4,23 @@
       <grid :w="size" :h="size"/>
     </div>
     <div class="side pa-4">
-      Controls go here
+      <controls/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop, Provide } from 'vue-property-decorator'
+  import { Vue, Component, Prop, Provide } from "vue-property-decorator"
+  import { Logic } from "./Logic"
   import Grid from "./Grid.vue"
-  import { Store } from "./Store"
+  import Controls from "./Controls.vue"
 
   @Component({
-    components: { Grid }
+    components: { Grid, Controls }
   })
   export default class Main extends Vue {
-    @Provide() readonly store = new Store(16)
-    get size() { return this.store.size }
+    @Provide() readonly logic = new Logic(16)
+    get size() { return this.logic.size }
   }
 </script>
 

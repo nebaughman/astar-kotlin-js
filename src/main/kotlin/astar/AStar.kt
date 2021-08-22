@@ -39,6 +39,7 @@ class ANode(val node: Node) {
 }
 
 // https://en.wikipedia.org/wiki/A*_search_algorithm
+@JsName("AStar")
 class AStar(
   private val graph: Graph,
   private val start: Node,
@@ -49,6 +50,7 @@ class AStar(
     it.guess = graph.heuristic(start, goal)
   })
 
+  @JsName("findPath")
   fun findPath(): List<Node> {
     while (openSet.isNotEmpty()) {
       val current = openSet.minByOrNull(ANode::guess)!! // TODO: openSet as priority queue to avoid O(n) search

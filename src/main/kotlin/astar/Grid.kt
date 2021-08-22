@@ -63,6 +63,16 @@ class GridMap(
     if (!isWall(node)) walls.add(node)
   }
 
+  @JsName("removeWall")
+  fun removeWall(node: GridNode) {
+    walls.remove(node)
+  }
+
+  @JsName("toggleWall")
+  fun toggleWall(node: GridNode) {
+    if (isWall(node)) removeWall(node) else addWall(node)
+  }
+
   @JsName("isWall")
   fun isWall(node: GridNode) = walls.contains(node)
 }

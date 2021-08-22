@@ -6,12 +6,12 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Inject, Emit } from "vue-property-decorator"
+  import { Logic } from "./Logic"
   import kotlin from "astar-kotlin-js"
-  import { Store } from "./Store"
 
   @Component
   export default class Cell extends Vue {
-    @Inject() readonly store!: Store
+    @Inject() readonly logic!: Logic
 
     @Prop(Number) readonly x!: number // TODO: take GridNode rather than x,y
     @Prop(Number) readonly y!: number
@@ -20,19 +20,34 @@
       return new kotlin.astar.GridNode(this.x, this.y)
     }
 
-    @Emit("cell-click")
-    handleClick() {
-      return this.gridNode
-      //this.store.gridMap.addWall(this.gridNode) // TODO: parent should manage state
-      //return { x: this.x, y: this.y } // TODO: return GridNode? (probably should)
+    //@Emit("cell-click")
+    private handleClick() {
+      if (this.isStart || this.isGoal) return
+      this.$emit("cell-click", this.gridNode)
     }
 
     get isWall() {
-      return this.store.gridMap.isWall(this.gridNode)
+      return this.logic.isWall(this.gridNode)
+    }
+
+    get isStart() {
+      return this.logic.isStart(this.gridNode)
+    }
+
+    get isGoal() {
+      return this.logic.isGoal(this.gridNode)
+    }
+
+    get onPath() {
+      return this.logic.onPath(this.gridNode)
     }
 
     get cellClass() {
-      return this.isWall ? "wall" : false
+      if (this.isStart) return "start"
+      if (this.isGoal) return "goal"
+      if (this.isWall) return "wall"
+      if (this.onPath) return "path"
+      return false
     }
   }
 </script>
@@ -57,6 +72,22 @@
   }
 
   .wall:hover {
-    background: #666
+    background: #666;
+  }
+
+  .start {
+    background: #00f;
+  }
+
+  .goal {
+    background: #0f0;
+  }
+
+  .start:hover, .goal:hover {
+    cursor: default;
+  }
+
+  .path {
+    background: aqua;
   }
 </style>
