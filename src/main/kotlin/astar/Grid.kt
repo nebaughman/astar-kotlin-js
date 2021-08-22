@@ -50,13 +50,17 @@ class GridMap(
     for (x in minX..maxX) {
       for (y in minY..maxY) {
         val gn = GridNode(x,y) // TODO: use existing instance if x,y tracked in map
-        if (!isWall(gn)) list.add(gn)
+        if (n != gn && !isWall(gn)) list.add(gn)
       }
     }
     return list
   }
 
-  private val walls = ArrayList<Node>()
+  private val walls = ArrayList<Node>() // Set would be better, but for JS
+
+  fun addWall(x: Int, y: Int) = apply {
+    addWall(GridNode(x,y))
+  }
 
   @JsName("addWall")
   fun addWall(node: GridNode) {

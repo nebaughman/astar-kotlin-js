@@ -16,22 +16,28 @@ dependencies {
 
 kotlin {
     js {
+        //moduleName = "astar" // "kotlin" by default?
         browser {
             webpackTask {
-                cssSupport.enabled = true
+                //cssSupport.enabled = true
             }
 
             runTask {
-                cssSupport.enabled = true
+                //cssSupport.enabled = true
             }
 
             testTask {
+                enabled = true
+                /*
                 useKarma {
                     useChromeHeadless()
-                    webpackConfig.cssSupport.enabled = true
-                }
+                    //useFirefox()
+                    //webpackConfig.cssSupport.enabled = true
+                }*/
+                useMocha { }
             }
         }
+        // nodejs { }
         binaries.executable()
     }
 }

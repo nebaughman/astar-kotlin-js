@@ -60,7 +60,7 @@ class AStar(
         // TODO: this is poor performance; maybe keep scores in Map<Node,Int> or keep Map<Node,ANode>
         //  In either case, Node must have quality equals and hashCode.
         val neighbor = openSet.find { it.node == n } ?: ANode(n)
-        val score = neighbor.score + 1 // TODO: graph provides weights from current to neighbors
+        val score = current.score + 1 // TODO: graph provides weights from current to neighbors
         if (score < neighbor.score) {
           neighbor.from = current
           neighbor.score = score
