@@ -34,7 +34,11 @@ kotlin {
                     //useFirefox()
                     //webpackConfig.cssSupport.enabled = true
                 }*/
-                useMocha { }
+                useMocha { } // initializes faster than Karma (no Chrome?)
+            }
+
+            dceTask {
+                dceOptions.devMode = true // disables dce entirely
             }
         }
         // nodejs { }

@@ -1,5 +1,8 @@
 package astar
 
+/**
+ * Node implementations must have quality equals() and hashCode() implementations
+ */
 interface Node
 
 /**
@@ -36,6 +39,16 @@ class ANode(val node: Node) {
   var from: ANode? = null
   var score: Int = Int.MAX_VALUE // known cost to this node
   var guess: Int = Int.MAX_VALUE // heuristic cost to goal through this node
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || this::class.js != other::class.js) return false
+    other as ANode
+    if (node != other.node) return false
+    return true
+  }
+
+  override fun hashCode() = node.hashCode()
 }
 
 // https://en.wikipedia.org/wiki/A*_search_algorithm
@@ -45,7 +58,11 @@ class AStar(
   private val start: Node,
   private val goal: Node,
 ) {
-  private val openSet = mutableListOf(ANode(start).also {
+  // keep state of each node encountered
+  private val nodes = mutableMapOf<Node,ANode>()
+  private fun getNode(node: Node) = nodes.getOrPut(node) { ANode(node) }
+
+  private val openSet = mutableSetOf(getNode(start).also {
     it.score = 0
     it.guess = graph.heuristic(start, goal)
   })
@@ -57,15 +74,13 @@ class AStar(
       if (current.node == goal) return constructPath(current)
       openSet.remove(current)
       graph.neighbors(current.node).forEach { n ->
-        // TODO: this is poor performance; maybe keep scores in Map<Node,Int> or keep Map<Node,ANode>
-        //  In either case, Node must have quality equals and hashCode.
-        val neighbor = openSet.find { it.node == n } ?: ANode(n)
+        val neighbor = getNode(n)
         val score = current.score + 1 // TODO: graph provides weights from current to neighbors
         if (score < neighbor.score) {
           neighbor.from = current
           neighbor.score = score
           neighbor.guess = score + graph.heuristic(neighbor.node, goal) // TODO: heuristic part of Node?
-          if (!openSet.contains(neighbor)) openSet.add(neighbor)
+          openSet.add(neighbor)
         }
       }
     }

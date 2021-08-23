@@ -56,7 +56,10 @@ class GridMap(
     return list
   }
 
-  private val walls = ArrayList<Node>() // Set would be better, but for JS
+  private val wallNodes = ArrayList<Node>() // Set would be better, but for JS
+
+  @JsName("walls")
+  val walls get(): List<Node> = wallNodes
 
   fun addWall(x: Int, y: Int) = apply {
     addWall(GridNode(x,y))
@@ -64,12 +67,12 @@ class GridMap(
 
   @JsName("addWall")
   fun addWall(node: GridNode) {
-    if (!isWall(node)) walls.add(node)
+    if (!isWall(node)) wallNodes.add(node)
   }
 
   @JsName("removeWall")
   fun removeWall(node: GridNode) {
-    walls.remove(node)
+    wallNodes.remove(node)
   }
 
   @JsName("toggleWall")
@@ -78,5 +81,5 @@ class GridMap(
   }
 
   @JsName("isWall")
-  fun isWall(node: GridNode) = walls.contains(node)
+  fun isWall(node: GridNode) = wallNodes.contains(node)
 }
