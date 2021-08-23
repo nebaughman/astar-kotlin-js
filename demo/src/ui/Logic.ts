@@ -32,20 +32,21 @@ export class Logic {
   get lastPath() { return this.p_lastPath }
   onPath(node: kotlin.astar.GridNode) { return this.lastPath.some(p => p.equals(node)) }
 
-  async runAStar() {
+  private p_noPath = false
+  get noPath() { return this.p_noPath }
+
+  async findPath() {
     this.p_running = true
-    const path = await new Promise((resolve,reject) => {
-      try {
-        const astar = new kotlin.astar.AStar(this.gridMap, this.start, this.goal)
-        const path = astar.findPath()
-        this.p_lastPath = path.toArray()
-        resolve(this.p_lastPath)
-      } catch (error) {
-        console.log("Error computing path") // TODO: set error state
-        reject(error)
-      }
-    })
+    this.p_lastPath = []
+    await new Promise(resolve => setTimeout(resolve, 100)) // give ui bit of time
+    this.p_lastPath = await this.runAStar()
+    this.p_noPath = this.p_lastPath.length == 0
     this.p_running = false
-    //return path
+  }
+
+  private async runAStar() {
+    const astar = new kotlin.astar.AStar(this.gridMap, this.start, this.goal)
+    const path = astar.findPath()
+    return path.isEmpty() ? [] : path.toArray()
   }
 }

@@ -1,6 +1,6 @@
 <template>
-  <div class="cell pa-1" :class="cellClass" @mousedown="handleClick" @mouseover="handleDrag">
-    {{ x }},{{ y }}
+  <div class="cell pa-1" :class="cellClass" @mousedown="handleClick" @mouseenter="handleDrag">
+    <span>{{ x }},{{ y }}</span>
   </div>
 </template>
 
@@ -20,14 +20,14 @@
       return new kotlin.astar.GridNode(this.x, this.y)
     }
 
-    //@Emit("cell-click")
+    //@Emit("toggle-wall")
     private handleClick() {
       if (this.isStart || this.isGoal) return
-      this.$emit("cell-click", this.gridNode)
+      this.$emit("toggle-wall", this.gridNode)
     }
 
     private handleDrag(event) {
-      if (event.buttons) this.handleClick()
+      if (event.buttons) this.$emit("add-wall", this.gridNode)
     }
 
     get isWall() {
@@ -62,7 +62,12 @@
     border-radius: 2px;
     background: #fff;
     font-size: 12px;
-    color: #666;
+    color: #ccc;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .cell:hover {
@@ -81,6 +86,7 @@
 
   .start {
     background: #00f;
+    color: #ccc;
   }
 
   .goal {

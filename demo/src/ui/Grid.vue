@@ -5,7 +5,8 @@
       :key="n-1"
       :x="(n-1) % w"
       :y="Math.floor((n-1) / w)"
-      @cell-click="cellClick"
+      @toggle-wall="toggleWall"
+      @add-wall="addWall"
     />
   </div>
 </template>
@@ -34,8 +35,12 @@
       }
     }
 
-    cellClick(node: kotlin.astar.GridNode) {
+    toggleWall(node: kotlin.astar.GridNode) {
       this.logic.gridMap.toggleWall(node)
+    }
+
+    addWall(node: kotlin.astar.GridNode) {
+      this.logic.gridMap.addWall(node)
     }
   }
 </script>
