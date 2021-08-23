@@ -1,38 +1,27 @@
 <template>
   <div class="controls d-flex flex-column">
+    <Legend/>
+    <v-divider/>
     <v-btn :disabled="running" :loading="running" @click="handleGo">Go</v-btn>
-    <div v-if="running">
-      Computing...
-    </div>
-    <div v-else-if="hasPath">
-      Shortest Path: {{ pathLength }} {{ pluralize(pathLength, "node", "nodes") }}
-    </div>
-    <div v-else-if="noPath">
-      No path to destination
-    </div>
+    <path-status/>
   </div>
 </template>
 
 <script lang="ts">  
   import { Vue, Component, Prop, Inject } from "vue-property-decorator"
-  import { Logic } from "./Logic"
   import kotlin from "astar-kotlin-js"
+  import { Logic } from "./Logic"
+  import Legend from "./Legend.vue"
+  import PathStatus from "./PathStatus.vue"
 
   @Component({
-    components: { }
+    components: { Legend, PathStatus }
   })
   export default class Controls extends Vue {
     @Inject() readonly logic!: Logic
-    private get running() { return this.logic.running }
-    private get lastPath() { return this.logic.lastPath }
-    private get pathLength() { return this.lastPath?.length || 0 }
-    private get hasPath() { return !!this.pathLength }
-    private get noPath() { return this.logic.noPath }
-    private handleGo() { this.logic.findPath() }
 
-    private pluralize(value: number, singular: string, plural: string) {
-      return value == 1 ? singular : plural
-    }
+    private get running() { return this.logic.running }
+    private handleGo() { this.logic.findPath() }
   }
 </script>
 
