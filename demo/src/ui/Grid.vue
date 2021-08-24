@@ -50,8 +50,8 @@
     width: 80vh;
     height: 80vh;
     background: #eee;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    /*border: 1px solid #ccc;*/
+    border-radius: 0px;
     display: grid;
     user-select: none;
   }

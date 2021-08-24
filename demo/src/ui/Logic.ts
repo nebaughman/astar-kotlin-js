@@ -4,11 +4,22 @@ import kotlin from "astar-kotlin-js"
 @VueStore
 export class Logic {
   constructor(
-    readonly size: number,
+    private initialSize: number,
   ) {}
 
   // TODO: adjustable size; gridMap as computed getter (but preserve its state?)
-  readonly gridMap = new kotlin.astar.GridMap(this.size, this.size)
+  private p_gridMap = new kotlin.astar.GridMap(this.initialSize, this.initialSize)
+  get gridMap() { return this.p_gridMap }
+
+  get size() { return this.p_gridMap.lonW } // assuming symmetric
+  get lonW() { return this.p_gridMap.lonW }
+  get latH() { return this.p_gridMap.latH }
+
+  setGridSize(size: number) {
+    this.p_gridMap = new kotlin.astar.GridMap(size, size)
+    this.goal = new kotlin.astar.GridNode(size - 1, size - 1)
+    this.p_lastPath = []
+  }
 
   start = new kotlin.astar.GridNode(0,0)
   goal = new kotlin.astar.GridNode(this.size - 1, this.size - 1)

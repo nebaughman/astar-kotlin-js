@@ -2,6 +2,8 @@
   <div class="controls d-flex flex-column">
     <Legend/>
     <v-divider/>
+    <grid-size/>
+    <v-divider/>
     <v-btn :disabled="running" :loading="running" @click="handleGo">Go</v-btn>
     <path-status/>
   </div>
@@ -13,9 +15,10 @@
   import { Logic } from "./Logic"
   import Legend from "./Legend.vue"
   import PathStatus from "./PathStatus.vue"
+  import GridSize from "./GridSize.vue"
 
   @Component({
-    components: { Legend, PathStatus }
+    components: { Legend, PathStatus, GridSize }
   })
   export default class Controls extends Vue {
     @Inject() readonly logic!: Logic

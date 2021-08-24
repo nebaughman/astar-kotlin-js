@@ -1,6 +1,6 @@
 <template>
   <div class="cell pa-1" :class="cellClass" @mousedown="handleClick" @mouseenter="handleDrag">
-    <span>{{ x }},{{ y }}</span>
+    <span v-if="showCoords">{{ x }},{{ y }}</span>
   </div>
 </template>
 
@@ -18,6 +18,10 @@
 
     private get gridNode() {
       return new kotlin.astar.GridNode(this.x, this.y)
+    }
+
+    private get showCoords() {
+      return this.logic.size <= 16
     }
 
     //@Emit("toggle-wall")
@@ -59,7 +63,7 @@
 <style scoped>
   .cell {
     border: thin solid #ccc;
-    border-radius: 2px;
+    border-radius: 0px;
     background: #fff;
     font-size: 12px;
     color: #ccc;
