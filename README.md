@@ -29,11 +29,31 @@ This is an experiment/demonstration of implementing a library in Kotlin targetin
 
 ## Thoughts
 
-I learned many things along the way, which I should write down...
+I learned many things along the way, which I should write down... _more to follow..._
 
-The build and distribution process is very manual right now. I should document how to do that...
+## Build Process
 
-_More to follow..._
+> This is very clunky and manual. Needs to be improved. 
+> Build products (`/demo/lib`) should not be in repo (except for `/docs` for GitHub Pages).
+> Try using `yarn link` rather than `yarn add` and point to proper astar module build path.
+
+- Run gradle target `browserProductionWebpack`
+- Copy `distributions/astar-kotlin-js.js` (and `.map`) to `demo/lib/astar`
+- From `/demo` project...
+- Run `yarn upgrade astar-kotlin-js` (if already added)
+- Run `yarn build` (or `yarn serve` for development)
+- Move `dist` `/docs` (for GitHub Pages hosting)
+
+## Release Process
+
+- `git checkout develop`
+- Update `build.gradle` with version `X.Y.Z`
+- `git commit -am "vX.Y.Z`"
+- `git checkout master && git merge develop && git tag X.Y.Z` // no `v`
+- `git push --all && git push --tags`
+- `git checkout develop` // back to work
+
+> GitHub Pages is hosting `/docs` off `master` branch.
 
 ## License
 
