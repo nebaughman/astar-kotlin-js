@@ -4,7 +4,10 @@
     <v-divider/>
     <grid-size/>
     <v-divider/>
-    <v-btn :disabled="running" :loading="running" @click="handleGo">Go</v-btn>
+    <div class="d-flex flex-row justify-space-between">
+      <v-btn :disabled="running" :loading="running" @click="handleGo" class="flex-grow-1">Go</v-btn>
+      <v-switch label="Slow" v-model="logic.slowPlayback" class="align-end mt-0 ml-3"/>
+    </div>
     <path-status/>
   </div>
 </template>

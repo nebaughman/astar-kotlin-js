@@ -1,5 +1,7 @@
 package astar
 
+//import kotlin.js.Promise
+
 /**
  * Node implementations must have quality equals() and hashCode() implementations
  */
@@ -33,9 +35,18 @@ class PathLibrary(
 */
 
 /**
+ * Progress is informed of each trial path as astar searches
+ */
+@JsName("Progress")
+interface Progress {
+  @JsName("currentPath") // sigh, really?
+  fun currentPath(path: List<Node>) // : Promise<Unit>?
+}
+
+/**
  * A Node with other bookkeeping for the AStar process
  */
-class ANode(val node: Node) {
+internal class ANode(val node: Node) {
   var from: ANode? = null
   var score: Int = Int.MAX_VALUE // known cost to this node
   var guess: Int = Int.MAX_VALUE // heuristic cost to goal through this node
@@ -68,9 +79,10 @@ class AStar(
   })
 
   @JsName("findPath")
-  fun findPath(): List<Node> {
+  fun findPath(progress: Progress? = null): List<Node> {
     while (openSet.isNotEmpty()) {
       val current = openSet.minByOrNull(ANode::guess)!! // TODO: openSet as priority queue to avoid O(n) search
+      progress?.currentPath(constructPath(current))
       if (current.node == goal) return constructPath(current)
       openSet.remove(current)
       graph.neighbors(current.node).forEach { n ->
