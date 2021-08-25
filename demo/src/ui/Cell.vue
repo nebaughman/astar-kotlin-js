@@ -16,6 +16,10 @@
     @Prop(Number) readonly x!: number // TODO: take GridNode rather than x,y
     @Prop(Number) readonly y!: number
 
+    private get isRunning() {
+      return this.logic.running
+    }
+
     private get gridNode() {
       return new kotlin.astar.GridNode(this.x, this.y)
     }
@@ -26,11 +30,12 @@
 
     //@Emit("toggle-wall")
     private handleClick() {
-      if (this.isStart || this.isGoal) return
+      if (this.isRunning || this.isStart || this.isGoal) return
       this.$emit("toggle-wall", this.gridNode)
     }
 
     private handleDrag(event) {
+      if (this.isRunning) return
       if (event.buttons) this.$emit("add-wall", this.gridNode)
     }
 
@@ -51,6 +56,13 @@
     }
 
     get cellClass() {
+      return [
+        this.cellType,
+        this.isRunning ? "running" : false,
+      ]
+    }
+
+    get cellType() {
       if (this.isStart) return "start"
       if (this.isGoal) return "goal"
       if (this.isWall) return "wall"
@@ -77,6 +89,10 @@
   .cell:hover {
     background: #ff0;
     cursor: pointer;
+  }
+
+  .cell.running:hover {
+    cursor: default;
   }
 
   .wall {
