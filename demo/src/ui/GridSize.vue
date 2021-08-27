@@ -11,6 +11,7 @@
       :thumb-label="false"
       label="Grid"
       dense
+      :disabled="running"
       v-model="size"
       class="custom-slider"
     />
@@ -27,6 +28,8 @@
 
     private size = 16
     private labels = ["16","24","32"]
+
+    private get running() { return this.logic.running }
 
     @Watch("size")
     private onSize(size: number) {
