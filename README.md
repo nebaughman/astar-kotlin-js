@@ -10,6 +10,8 @@ This is an experiment/demonstration of implementing a library in Kotlin targetin
 - `demo` Vue project uses `astar-kotlin-js.js` library to visualize pathfinding
 
 > Note that the A* implementation is for demonstration purposes. I just wanted something a bit interesting to visualize. It's not optimized for production use.
+>
+> **Warning:** I've found an error in this A* implementation. It is not always reporting quite the shortest path! Discovered a pattern which found a path of length N. Closing off that path, A* then found a path of N-1. Since the N-1 path was available in the first place, it should have matched it in the first run, rather than reporting the N-length path. This is still suitable for demonstrating Kotlin/JS, but it's unsettling to have a bad A* implementation.
 
 ## Ecosystem
 
@@ -47,8 +49,7 @@ Active `yarn serve` process will pick up any changes.
 
 ## Release Process
 
-Prefer not to make code changes with the release commit, just update version and build docs. Always start (and develop) in `develop` branch. Merging to master defines a release, must
-be tagged, and will trigger CI/CD (just GitHub Pages hosting at this point).
+Prefer not to make code changes with the release commit, just update version and build docs. Always start (and develop) in `develop` branch. Never make changes directly to `master`. Merging to `master` defines a release, must be tagged, and will trigger CI/CD (just GitHub Pages hosting at this point).
 
 - `git checkout develop`
 - Update `build.gradle` with version `X.Y.Z`
@@ -56,6 +57,7 @@ be tagged, and will trigger CI/CD (just GitHub Pages hosting at this point).
   - Run `browserProductionWebpack` gradle task
   - In `demo` run `yarn build`
   - Remove old `docs` & move `demo/dist` to `docs`
+  - Remove `docs/js/*.map` sourcemaps (unneeded in repo)
   - In `docs` run `http-server` to see if distribution works
 - `git commit -am "vX.Y.Z"`
 - `git checkout master && git merge develop && git tag X.Y.Z` # no `v`
@@ -63,6 +65,8 @@ be tagged, and will trigger CI/CD (just GitHub Pages hosting at this point).
 - `git checkout develop` # back to work
 
 > GitHub Pages is hosting `/docs` off `master` branch.
+
+> TODO: These steps could be more automated (especially the `docs` build).
 
 ## License
 
