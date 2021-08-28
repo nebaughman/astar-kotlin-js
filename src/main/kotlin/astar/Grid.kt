@@ -3,6 +3,7 @@ package astar
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.reflect.KClass
 
 @JsName("GridNode")
 class GridNode(
@@ -56,10 +57,10 @@ class GridMap(
     return list
   }
 
-  private val wallNodes = ArrayList<Node>() // Set would be better, but for JS
+  private val wallNodes = ArrayList<GridNode>() // Set would be better, but for JS
 
   @JsName("walls")
-  val walls get(): List<Node> = wallNodes
+  val walls get(): List<GridNode> = wallNodes
 
   fun addWall(x: Int, y: Int) = apply {
     addWall(GridNode(x,y))
@@ -82,4 +83,50 @@ class GridMap(
 
   @JsName("isWall")
   fun isWall(node: GridNode) = wallNodes.contains(node)
+}
+
+// TODO: instead, use Kotlin Serialization (JSON or ProtoBuf)
+/**
+ * Helper to export/parse GridMap to/from string form.
+ * Do not use this for persistent long-lived data; format may change.
+ * Only use for current runtime transforms.
+ *
+ * Specific use case is to post data to/from Service Worker process.
+ * Not using JSON because it's much more verbose than needed.
+ * Could integrate with respective classes, but separating serialization.
+ */
+@JsName("GridParser")
+object GridParser {
+  @JsName("exportGridMap")
+  fun export(grid: GridMap): String {
+    val list = mutableListOf(grid.lonW, grid.latH)
+    grid.walls.forEach { list.add(it.x); list.add(it.y) }
+    return list.joinToString(",")
+  }
+
+  @JsName("parseGridMap")
+  fun parseGridMap(str: String): GridMap {
+    val list = str.split(',').toMutableList()
+    val grid = GridMap(list.removeFirst().toInt(), list.removeFirst().toInt())
+    while (list.isNotEmpty()) {
+      grid.addWall(list.removeFirst().toInt(), list.removeFirst().toInt())
+    }
+    return grid
+  }
+
+  @JsName("exportGridNode")
+  fun export(node: GridNode) = "${node.x},${node.y}"
+
+  @JsName("parseGridNode")
+  fun parseGridNode(str: String) = str.split(',').let {
+    GridNode(it.first().toInt(), it.last().toInt())
+  }
+
+  /*
+  fun <T:Any> parse(str: String, type: KClass<T>): T = when (type) {
+    GridMap::class -> parseGridMap(str) as T
+    GridNode::class -> parseGridNode(str) as T
+    else -> throw IllegalArgumentException("Unsupported type $type")
+  }
+  */
 }

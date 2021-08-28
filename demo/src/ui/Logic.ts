@@ -1,15 +1,9 @@
 import VueStore from "vue-class-store"
 import kotlin from "astar-kotlin-js"
+import { AStarAdaptor, ProgressMonitor } from "./AStar"
 
-class ProgressMonitor implements kotlin.astar.Progress {
-  constructor(readonly retainPaths: boolean = true) {}
-  readonly paths: kotlin.astar.GridNode[][] = []
-  pathCount = 0
-  currentPath(path: kotlin.collections.List) {
-    this.paths.push(path.toArray())
-    this.pathCount++ // redundant if retaining paths
-  }
-}
+//@ts-ignore
+import Worker from "worker-loader!./Worker.js"
 
 @VueStore
 export class Logic {
@@ -65,27 +59,42 @@ export class Logic {
 
   slowPlayback = false
 
-  async findPath() {
+  findPath() {
     this.p_running = true
     this.p_lastPath = []
     this.p_pathCount = 0
-    await this.stall(100) // give ui a bit of time
-    await this.runAStar() // state change via side-effect
-    this.p_noPath = this.p_lastPath.length == 0
-    this.p_running = false
+    this.postAStar()
   }
 
-  private async runAStar() {
-    const progress = new ProgressMonitor(this.slowPlayback)
-    const astar = new kotlin.astar.AStar(this.gridMap, this.start, this.goal)
-    const path = astar.findPath(progress)
-    for (var i = 0; i < progress.pathCount; i++) {
-      this.p_lastPath = progress.paths[i]
-      await this.stall(10)
-      if (!this.slowPlayback) break
+  /**
+   * Process pathfinding on Worker instance
+   */
+  private postAStar() {
+    const worker = new Worker()
+    worker.onmessage = (event:any) => {
+      this.showResult(event.data)
+      worker.terminate() // not clear if this is important
     }
-    this.p_lastPath = path.isEmpty() ? [] : path.toArray() // side-effect
-    this.p_pathCount = progress.pathCount
+    worker.postMessage({
+      retainPaths: this.slowPlayback, // retain paths if playing back slow
+      gridMap: kotlin.astar.GridParser.exportGridMap(this.gridMap),
+      start: kotlin.astar.GridParser.exportGridNode(this.start),
+      goal: kotlin.astar.GridParser.exportGridNode(this.goal),
+    })
+  }
+
+  private async showResult(result: ProgressMonitor) {
+    if (this.slowPlayback) {
+      for (var i = 0; i < result.pathCount; i++) {
+        this.p_lastPath = result.paths[i].map(n => new kotlin.astar.GridNode(n.x, n.y))
+        await this.stall(10)
+        if (!this.slowPlayback) break
+      }
+    }
+    this.p_lastPath = result.lastPath.map(n => new kotlin.astar.GridNode(n.x, n.y))
+    this.p_pathCount = result.pathCount
+    this.p_noPath = this.p_lastPath.length == 0
+    this.p_running = false
   }
 
   private async stall(ms: number) {
