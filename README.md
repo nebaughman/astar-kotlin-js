@@ -47,14 +47,16 @@ Active `yarn serve` process will pick up any changes.
 
 ## Release Process
 
-Prefer not to make code changes with the release commit, just version bump & docs build.
+Prefer not to make code changes with the release commit, just update version and build docs. Always start (and develop) in `develop` branch. Merging to master defines a release, must
+be tagged, and will trigger CI/CD (just GitHub Pages hosting at this point).
 
 - `git checkout develop`
 - Update `build.gradle` with version `X.Y.Z`
 - For GitHub Pages hosting:
   - Run `browserProductionWebpack` gradle task
   - In `demo` run `yarn build`
-  - Remove old `/docs` & move `/demo/dist` to `/docs`
+  - Remove old `docs` & move `demo/dist` to `docs`
+  - In `docs` run `http-server` to see if distribution works
 - `git commit -am "vX.Y.Z"`
 - `git checkout master && git merge develop && git tag X.Y.Z` # no `v`
 - `git push --all && git push --tags`
