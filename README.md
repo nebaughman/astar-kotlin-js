@@ -9,9 +9,7 @@ This is an experiment/demonstration of implementing a library in Kotlin targetin
 - Gradle `browserProductionWebpack` target produces `astar-kotlin-js.js` library
 - `demo` Vue project uses `astar-kotlin-js.js` library to visualize pathfinding
 
-> Note that the A* implementation is for demonstration purposes. I just wanted something a bit interesting to visualize. It's not optimized for production use.
->
-> **Warning:** I've found an error in this A* implementation. It is not always reporting quite the shortest path! Discovered a pattern which found a path of length N. Closing off that path, A* then found a path of N-1. Since the N-1 path was available in the first place, it should have matched it in the first run, rather than reporting the N-length path. This is still suitable for demonstrating Kotlin/JS, but it's unsettling to have a bad A* implementation.
+> Note that the A* implementation is for demonstration purposes. I just wanted something a bit interesting to visualize. It's not optimized for production use, and might not even be correct.
 
 ## Ecosystem
 

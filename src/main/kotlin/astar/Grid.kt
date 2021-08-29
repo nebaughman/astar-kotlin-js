@@ -3,7 +3,6 @@ package astar
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.reflect.KClass
 
 @JsName("GridNode")
 class GridNode(
@@ -33,12 +32,17 @@ class GridNode(
 class GridMap(
   val lonW: Int,
   val latH: Int,
-): Graph {
-  // TODO: factor Graph impl out of GridMap itself?
+): Graph { // TODO: factor Graph impl out of GridMap itself?
+  /**
+   * Diagonal distance heuristic
+   * https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#heuristics-for-grid-maps
+   */
   override fun heuristic(from: Node, goal: Node): Int {
     val a = from as GridNode
     val b = goal as GridNode
-    return abs(a.x - b.x) + abs(a.y - b.y) // Manhattan distance
+    val dx = abs(a.x - b.x)
+    val dy = abs(a.y - b.y)
+    return (dx + dy) - min(dx, dy) // step weights of 1
   }
 
   override fun neighbors(node: Node): List<Node> {
