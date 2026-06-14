@@ -8,11 +8,13 @@ import Worker from "worker-loader!./Worker.js"
 @VueStore
 export class Logic {
   constructor(
-    private initialSize: number,
-  ) {}
+    initialSize: number,
+  ) {
+    this.setGridSize(initialSize)
+  }
 
   // TODO: adjustable size; gridMap as computed getter (but preserve its state?)
-  private p_gridMap = new kotlin.astar.GridMap(this.initialSize, this.initialSize)
+  private p_gridMap = new kotlin.astar.GridMap(0, 0)
   get gridMap() { return this.p_gridMap }
 
   get size() { return this.p_gridMap.lonW } // assuming symmetric
