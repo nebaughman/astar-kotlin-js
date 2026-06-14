@@ -73,8 +73,8 @@ export class Logic {
    */
   private postAStar() {
     const worker = new Worker()
-    worker.onmessage = (event:any) => {
-      this.showResult(event.data)
+    worker.onmessage = async (event:any) => {
+      await this.showResult(event.data)
       worker.terminate() // not clear if this is important
     }
     worker.postMessage({
